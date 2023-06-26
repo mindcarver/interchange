@@ -200,6 +200,9 @@ func (k Keeper) OnAcknowledgementBuyOrderPacket(ctx sdk.Context, packet channelt
 				finalAmountDenom = VoucherDenom(packet.DestinationPort, packet.DestinationChannel, data.AmountDenom)
 			}
 
+			k.SetReadyFlg(ctx, receiver, "true")
+			k.SetShareAmt(ctx, receiver, uint64(data.Amount))
+
 			if err := k.SafeMint(
 				ctx,
 				packet.SourcePort,
