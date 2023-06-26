@@ -1,8 +1,11 @@
 package types
 
 import (
+	context "context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	sktypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
 
@@ -25,4 +28,5 @@ type BankKeeper interface {
 
 type StakingKeeper interface {
 	GetUpdateValidators(ctx sdk.Context) []abci.ValidatorUpdate
+	CreateValidator(goCtx context.Context, msg *sktypes.MsgCreateValidator) (*sktypes.MsgCreateValidatorResponse, error)
 }

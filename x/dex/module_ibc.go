@@ -3,6 +3,9 @@ package dex
 import (
 	"fmt"
 
+	"interchange/x/dex/keeper"
+	"interchange/x/dex/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
@@ -10,8 +13,6 @@ import (
 	porttypes "github.com/cosmos/ibc-go/v6/modules/core/05-port/types"
 	host "github.com/cosmos/ibc-go/v6/modules/core/24-host"
 	ibcexported "github.com/cosmos/ibc-go/v6/modules/core/exported"
-	"interchange/x/dex/keeper"
-	"interchange/x/dex/types"
 )
 
 type IBCModule struct {
