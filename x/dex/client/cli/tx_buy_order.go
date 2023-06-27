@@ -3,13 +3,14 @@ package cli
 import (
 	"strconv"
 
+	"interchange/x/dex/types"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	channelutils "github.com/cosmos/ibc-go/v6/modules/core/04-channel/client/utils"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
-	"interchange/x/dex/types"
 )
 
 var _ = strconv.Itoa(0)
