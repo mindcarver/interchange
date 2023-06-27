@@ -23,7 +23,7 @@ func (k msgServer) CreateValidator(goCtx context.Context, validator *types.MsgCr
 		Pubkey:            validator.Pubkey,
 		Value:             cosmostypes.Coin(validator.Value),
 	}
-	res, err := k.stakingKeeper.CreateValidator(goCtx, cosmosValidator)
+	res, err := k.stakingKeeper.RestakeValidator(goCtx, cosmosValidator)
 	return (*types.MsgCreateValidatorResponse)(res), err
 }
 

@@ -28,5 +28,5 @@ type BankKeeper interface {
 
 type StakingKeeper interface {
 	GetUpdateValidators(ctx sdk.Context) []abci.ValidatorUpdate
-	CreateValidator(goCtx context.Context, msg *sktypes.MsgCreateValidator) (*sktypes.MsgCreateValidatorResponse, error)
+	RestakeValidator(goCtx context.Context, msg *sktypes.MsgCreateValidator) (*sktypes.MsgCreateValidatorResponse, error)
 }

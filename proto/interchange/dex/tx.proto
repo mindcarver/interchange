@@ -3,7 +3,7 @@ syntax = "proto3";
 package interchange.dex;
 
 import "interchange/dex/coin.proto";
-import "interchange/dex/msg.proto";
+//import "interchange/dex/msg.proto";
 import "interchange/dex/restaking.proto";
 
 import "gogoproto/gogo.proto";
@@ -91,8 +91,8 @@ message MsgCreateValidator {
   // NOTE(fdymylja): this is a particular case in which
   // if validator_address == delegator_address then only one
   // is expected to sign, otherwise both are.
-  option (interchange.dex.signer) = "delegator_address";
-  option (interchange.dex.signer) = "validator_address";
+  // option (interchange.dex.signer) = "delegator_address";
+  // option (interchange.dex.signer) = "validator_address";
 
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
