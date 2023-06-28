@@ -8,6 +8,18 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
+var (
+	_ sdk.Msg                            = &MsgCreateValidator{}
+	_ codectypes.UnpackInterfacesMessage = (*MsgCreateValidator)(nil)
+	_ sdk.Msg                            = &MsgCreateValidator{}
+)
+
+// UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
+func (msg MsgCreateValidator) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	var pubKey cryptotypes.PubKey
+	return unpacker.UnpackAny(msg.Pubkey, &pubKey)
+}
+
 func NewMsgCreateValidator(
 	valAddr sdk.ValAddress, pubKey cryptotypes.PubKey,
 	selfDelegation sdk.Coin, description Description, commission CommissionRates, minSelfDelegation math.Int,
@@ -19,12 +31,16 @@ func NewMsgCreateValidator(
 			return nil, err
 		}
 	}
+	selfDelegationConvert := Coin{
+		Denom:  selfDelegation.Denom,
+		Amount: selfDelegation.Amount,
+	}
 	return &MsgCreateValidator{
 		Description:       description,
 		DelegatorAddress:  sdk.AccAddress(valAddr).String(),
 		ValidatorAddress:  valAddr.String(),
 		Pubkey:            pkAny,
-		Value:             Coin(selfDelegation),
+		Value:             selfDelegationConvert,
 		Commission:        commission,
 		MinSelfDelegation: minSelfDelegation,
 	}, nil
@@ -97,4 +113,14 @@ func (msg MsgCreateValidator) GetSigners() []sdk.AccAddress {
 func (msg MsgCreateValidator) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
+}
+
+func NewDescription(moniker, identity, website, securityContact, details string) Description {
+	return Description{
+		Moniker:         moniker,
+		Identity:        identity,
+		Website:         website,
+		SecurityContact: securityContact,
+		Details:         details,
+	}
 }

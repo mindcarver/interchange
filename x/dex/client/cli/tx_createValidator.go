@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"interchange/x/dex/types"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -10,7 +11,6 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
 )
@@ -56,7 +56,7 @@ func CmdCreateValidatorCmd() *cobra.Command {
 	return cmd
 }
 
-func newBuildCreateValidatorMsg(clientCtx client.Context, txf tx.Factory, fs *flag.FlagSet) (tx.Factory, *stakingtypes.MsgCreateValidator, error) {
+func newBuildCreateValidatorMsg(clientCtx client.Context, txf tx.Factory, fs *flag.FlagSet) (tx.Factory, *types.MsgCreateValidator, error) {
 	fAmount, _ := fs.GetString(FlagAmount)
 
 	amount, err := sdk.ParseCoinNormalized(fAmount)
@@ -80,7 +80,7 @@ func newBuildCreateValidatorMsg(clientCtx client.Context, txf tx.Factory, fs *fl
 	website, _ := fs.GetString(FlagWebsite)
 	security, _ := fs.GetString(FlagSecurityContact)
 	details, _ := fs.GetString(FlagDetails)
-	description := stakingtypes.NewDescription(
+	description := types.NewDescription(
 		moniker,
 		identity,
 		website,
@@ -106,11 +106,8 @@ func newBuildCreateValidatorMsg(clientCtx client.Context, txf tx.Factory, fs *fl
 		return txf, nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "minimum self delegation must be a positive integer")
 	}
 
-	// msg, err := types.NewMsgCreateValidator(
-	// 	sdk.ValAddress(valAddr), pk, amount, description, types.CommissionRates(commissionRates), minSelfDelegation,
-	// )
-	msg, err := stakingtypes.NewMsgCreateValidator(
-		sdk.ValAddress(valAddr), pk, amount, description, commissionRates, minSelfDelegation,
+	msg, err := types.NewMsgCreateValidator(
+		sdk.ValAddress(valAddr), pk, amount, description, types.CommissionRates(commissionRates), minSelfDelegation,
 	)
 
 	if err != nil {

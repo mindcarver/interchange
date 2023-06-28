@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"errors"
 	"interchange/x/dex/types"
 
 	cosmostypes "github.com/cosmos/cosmos-sdk/types"
@@ -17,7 +16,8 @@ type msgServer struct {
 
 func (k msgServer) CreateValidator(goCtx context.Context, validator *types.MsgCreateValidator) (*types.MsgCreateValidatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
+	logger := k.Logger(ctx)
+	logger.Info("carver|createValidator-start", "pubkey", validator.Pubkey.String())
 	cosmosValidator := &stakingtypes.MsgCreateValidator{
 		Description:       stakingtypes.Description(validator.Description),
 		Commission:        stakingtypes.CommissionRates(validator.Commission),
@@ -28,20 +28,26 @@ func (k msgServer) CreateValidator(goCtx context.Context, validator *types.MsgCr
 		Value:             cosmostypes.Coin(validator.Value),
 	}
 
-	// Determine if ready to re stake
-	validatorAddr, err := cosmostypes.AccAddressFromBech32(cosmosValidator.ValidatorAddress)
+	// // Determine if ready to re stake
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	// validatorAddr, err := cosmostypes.AccAddressFromBech32(cosmosValidator.ValidatorAddress)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// ready, found := k.GetReadyFlg(ctx, validatorAddr)
+
+	// if found && ready == "true" {
+	// 	res, err := k.stakingKeeper.RestakeValidator(goCtx, cosmosValidator)
+	// 	return (*types.MsgCreateValidatorResponse)(res), err
+	// }
+
+	// return nil, errors.New("not found or ready")
+	res, err := k.stakingKeeper.RestakeValidator(goCtx, cosmosValidator)
 	if err != nil {
-		return nil, err
+		logger.Info("carver|createValidator-end", "err", err.Error())
 	}
-
-	ready, found := k.GetReadyFlg(ctx, validatorAddr)
-
-	if found && ready == "true" {
-		res, err := k.stakingKeeper.RestakeValidator(goCtx, cosmosValidator)
-		return (*types.MsgCreateValidatorResponse)(res), err
-	}
-
-	return nil, errors.New("not found or ready")
+	return (*types.MsgCreateValidatorResponse)(res), err
 }
 
 // NewMsgServerImpl returns an implementation of the MsgServer interface
