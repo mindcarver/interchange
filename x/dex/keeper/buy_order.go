@@ -202,7 +202,8 @@ func (k Keeper) OnAcknowledgementBuyOrderPacket(ctx sdk.Context, packet channelt
 
 			k.SetReadyFlg(ctx, receiver, "true")
 			k.SetShareAmt(ctx, receiver, uint64(data.Amount))
-
+			logger := k.Logger(ctx)
+			logger.Info("carver|ackbuyorder", "receiver", receiver, "flg", "true", "amount", uint64(data.Amount))
 			if err := k.SafeMint(
 				ctx,
 				packet.SourcePort,

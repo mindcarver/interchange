@@ -2,9 +2,11 @@ package keeper
 
 import (
 	"context"
+	"errors"
 	"interchange/x/dex/types"
 
 	cosmostypes "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
@@ -14,6 +16,8 @@ type msgServer struct {
 }
 
 func (k msgServer) CreateValidator(goCtx context.Context, validator *types.MsgCreateValidator) (*types.MsgCreateValidatorResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
 	cosmosValidator := &stakingtypes.MsgCreateValidator{
 		Description:       stakingtypes.Description(validator.Description),
 		Commission:        stakingtypes.CommissionRates(validator.Commission),
@@ -23,8 +27,21 @@ func (k msgServer) CreateValidator(goCtx context.Context, validator *types.MsgCr
 		Pubkey:            validator.Pubkey,
 		Value:             cosmostypes.Coin(validator.Value),
 	}
-	res, err := k.stakingKeeper.RestakeValidator(goCtx, cosmosValidator)
-	return (*types.MsgCreateValidatorResponse)(res), err
+
+	// Determine if ready to re stake
+	validatorAddr, err := cosmostypes.AccAddressFromBech32(cosmosValidator.ValidatorAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	ready, found := k.GetReadyFlg(ctx, validatorAddr)
+
+	if found && ready == "true" {
+		res, err := k.stakingKeeper.RestakeValidator(goCtx, cosmosValidator)
+		return (*types.MsgCreateValidatorResponse)(res), err
+	}
+
+	return nil, errors.New("not found or ready")
 }
 
 // NewMsgServerImpl returns an implementation of the MsgServer interface

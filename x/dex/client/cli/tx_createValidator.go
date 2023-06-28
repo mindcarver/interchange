@@ -17,7 +17,7 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func NewCreateValidatorCmd() *cobra.Command {
+func CmdCreateValidatorCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-validator",
 		Short: "create new validator initialized with a self-delegation to it",
