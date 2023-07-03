@@ -11,6 +11,7 @@ accounts:
   - 1000token
   - 100000000stake
   - 1000marscoin
+  - 333333testcoin
 - name: bob
   coins:
   - 500token

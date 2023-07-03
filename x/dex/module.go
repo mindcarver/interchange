@@ -163,12 +163,13 @@ func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 }
 
 // EndBlock contains the logic that is automatically triggered at the end of each block
-func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
-	validators := am.stackingKeeper.GetUpdateValidators(ctx)
-	am.keeper.Logger(ctx).Info("azh|dex endblock")
-	for _, v := range validators {
-		coins := sdk.NewInt64Coin("token", v.Power)
-		am.keeper.MintTokens(ctx, sdk.AccAddress(v.PubKey.String()), coins)
-	}
+func (am AppModule) EndBlock(ctx sdk.Context, val abci.RequestEndBlock) []abci.ValidatorUpdate {
+
+	// validators := am.stackingKeeper.GetUpdateValidators(ctx)
+	// am.keeper.Logger(ctx).Info("azh|dex endblock")
+	// for _, v := range validators {
+	// 	coins := sdk.NewInt64Coin("token", v.Power)
+	// 	am.keeper.MintTokens(ctx, sdk.AccAddress(v.PubKey.String()), coins)
+	// }
 	return []abci.ValidatorUpdate{}
 }

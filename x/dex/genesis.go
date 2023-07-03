@@ -1,9 +1,10 @@
 package dex
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"interchange/x/dex/keeper"
 	"interchange/x/dex/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.
