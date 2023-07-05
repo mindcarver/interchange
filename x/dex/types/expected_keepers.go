@@ -30,4 +30,5 @@ type BankKeeper interface {
 type StakingKeeper interface {
 	GetUpdateValidators(ctx sdk.Context) []abci.ValidatorUpdate
 	RestakeValidator(goCtx context.Context, msg *sktypes.MsgCreateValidator) (*sktypes.MsgCreateValidatorResponse, error)
+	GetHistoricalInfo(ctx sdk.Context, height int64) (sktypes.HistoricalInfo, bool)
 }

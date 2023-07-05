@@ -111,8 +111,6 @@ import (
 
 	appparams "interchange/app/params"
 	"interchange/docs"
-
-	cryptoenc "github.com/tendermint/tendermint/crypto/encoding"
 )
 
 const (
@@ -752,24 +750,7 @@ func (app *App) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.R
 
 // EndBlocker application updates every end block
 func (app *App) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
-	vals := app.mm.EndBlock(ctx, req)
-
-	app.Logger().Info("csh|app EndBlocker 0", "length", len(vals.ValidatorUpdates), "val", vals.ValidatorUpdates)
-	for _, v := range vals.ValidatorUpdates {
-		coins := sdk.NewInt64Coin("testcoin", v.Power)
-		pub, _ := cryptoenc.PubKeyFromProto(v.PubKey)
-		vs := app.StakingKeeper.GetAllValidators(ctx)
-		for _, v := range vs {
-			conspub, _ := v.ConsPubKey()
-			if conspub.Address().String() == pub.Address().String() {
-				val, _ := sdk.ValAddressFromBech32(v.OperatorAddress)
-				app.Logger().Info("azh|val", "adr", sdk.AccAddress(val))
-				app.DexKeeper.MintTokens(ctx, sdk.AccAddress(val), coins)
-			}
-		}
-	}
-	return vals
-	//return app.mm.EndBlock(ctx, req)
+	return app.mm.EndBlock(ctx, req)
 }
 
 // InitChainer application update at chain initialization

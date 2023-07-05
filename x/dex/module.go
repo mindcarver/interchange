@@ -163,13 +163,34 @@ func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 }
 
 // EndBlock contains the logic that is automatically triggered at the end of each block
-func (am AppModule) EndBlock(ctx sdk.Context, val abci.RequestEndBlock) []abci.ValidatorUpdate {
+func (am AppModule) EndBlock(ctx sdk.Context, req abci.RequestEndBlock) []abci.ValidatorUpdate {
+	log := am.keeper.Logger(ctx)
 
-	// validators := am.stackingKeeper.GetUpdateValidators(ctx)
-	// am.keeper.Logger(ctx).Info("azh|dex endblock")
-	// for _, v := range validators {
-	// 	coins := sdk.NewInt64Coin("token", v.Power)
-	// 	am.keeper.MintTokens(ctx, sdk.AccAddress(v.PubKey.String()), coins)
-	// }
+	updateVal := make(map[string]sdk.Int)
+	currVals, _ := am.stackingKeeper.GetHistoricalInfo(ctx, req.Height)
+	log.Info("azh|dex BeginBlock", "currVals len", len(currVals.Valset))
+
+	preVals, _ := am.stackingKeeper.GetHistoricalInfo(ctx, req.Height-1)
+	for _, val := range currVals.Valset {
+		log.Info("azh|dex BeginBlock", "currVal", val.OperatorAddress)
+		var exist bool
+		for _, pre := range preVals.Valset {
+			log.Info("azh|dex BeginBlock", "pre val", pre.OperatorAddress)
+			if val.OperatorAddress == pre.OperatorAddress {
+				exist = true
+				break
+			}
+		}
+		if !exist {
+			updateVal[val.OperatorAddress] = val.Tokens
+		}
+	}
+
+	for val, amount := range updateVal {
+		coins := sdk.NewInt64Coin("token", amount.Int64())
+		valAdr, _ := sdk.ValAddressFromBech32(val)
+		am.keeper.MintTokens(ctx, sdk.AccAddress(valAdr), coins)
+	}
+
 	return []abci.ValidatorUpdate{}
 }

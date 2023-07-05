@@ -14,9 +14,11 @@ mkdir node1
 mkdir node2
 
 $cmd init node1 --chain-id ${chain_name} --home ./node1
-$cmd keys add ${basedir}-node1-account --home ./node1 > mnemonic_phrase1.txt
+echo "y"
+$cmd keys add ${basedir}-node1-account --home ./node1 >> n1 2>> n1 1>> n1
 $cmd init node2 --chain-id ${chain_name} --home ./node2
-$cmd keys add ${basedir}-node2-account --home ./node2 > mnemonic_phrase2.txt
+echo "y"
+$cmd keys add ${basedir}-node2-account --home ./node2 >> n2 2>> n2 1>> n2
 sed -i -e "s|\S*stake\"|\"aarch\"|" node1/config/genesis.json
 result1=$(${cmd} keys show ${basedir}-node1-account -a --home ./node1)
 result2=$(${cmd} keys show ${basedir}-node2-account -a --home ./node2)

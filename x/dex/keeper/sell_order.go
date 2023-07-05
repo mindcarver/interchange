@@ -101,7 +101,7 @@ func (k Keeper) OnRecvSellOrderPacket(ctx sdk.Context, packet channeltypes.Packe
 	seller, _ := sdk.AccAddressFromBech32(data.Seller)
 	logger.Info("carver|send token to ", "seller", seller, "amount", data.Amount)
 
-	err2 := k.MintTokens(ctx, seller, sdk.NewCoin("stake", sdkmath.NewInt(int64(666666))))
+	err2 := k.MintTokens(ctx, seller, sdk.NewCoin("aarch", sdkmath.NewInt(int64(666666))))
 
 	//err2 := k.MintTokens(ctx, seller, sdk.NewCoin("stake", sdkmath.NewInt(int64(data.Amount))))
 	logger.Info("carver|send token err", "seller", seller, "err", err2)
